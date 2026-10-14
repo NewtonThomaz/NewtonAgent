@@ -30,6 +30,20 @@ export function errorMessage(err: unknown): string {
   }
 }
 
+/** Detects errors caused by Chrome BFCache, navigation, or closed IPC message channel. */
+export function isChannelClosedOrNavigationError(err: unknown): boolean {
+  const msg = errorMessage(err).toLowerCase();
+  return (
+    msg.includes('back/forward cache') ||
+    msg.includes('message channel is closed') ||
+    msg.includes('message channel closed') ||
+    msg.includes('receiving end does not exist') ||
+    msg.includes('could not establish connection') ||
+    msg.includes('frame with id 0 was removed') ||
+    msg.includes('frame was removed')
+  );
+}
+
 /** Small, fast, non-cryptographic hash (FNV-1a) used to detect "page did not change". */
 export function quickHash(input: string): string {
   let h = 0x811c9dc5;

@@ -105,7 +105,7 @@ Seu objetivo principal é interagir com a página ativa (formulários dinâmicos
    - Selecione opções de <select> usando "select" ou clicando na opção desejada.
    - Após preencher uma seção ou questão, clique no botão "Próximo", "Avançar", "Submeter" ou similar se o fluxo exigir.
 5. Quando o objetivo do usuário estiver totalmente alcançado (ex: todas as perguntas respondidas, formulário submetido ou etapa final atingida), retorne "goal_achieved": true.
-6. Se a página não apresentar novos elementos necessários ou parecer estar carregando, use a ação "wait" (ms: 1000).
+6. O navegador já aguarda estabilização de rede e DOM automaticamente. NÃO adicione "wait" longo após cliques comuns. Use "wait" (ms: 800 a 1500) apenas se a página exibir um indicador visual de carregamento ou transição em andamento.
 
 ### FORMATO ESTRITO DE RESPOSTA (JSON APENAS):
 Sua resposta DEVE ser estritamente um JSON no seguinte formato (sem explicações fora do JSON):

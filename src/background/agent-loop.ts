@@ -1,6 +1,6 @@
 import { MAX_ACTIONS_PER_STEP } from '../shared/constants';
 import type { ActionResult, AgentAction, AgentDecision, AgentSettings, PageSnapshot } from '../shared/types';
-import { cleanText, errorMessage, quickHash, sleep } from '../shared/utils';
+import { clamp, cleanText, errorMessage, isChannelClosedOrNavigationError, quickHash, sleep } from '../shared/utils';
 import { startKeepAlive, stopKeepAlive } from './keepalive';
 import { LLMClient } from './llm/client';
 import { buildMessages, type HistoryItem } from './prompt';
@@ -173,8 +173,22 @@ export class AgentRunner {
           await chrome.tabs.update(tabId, { url: action.url });
           await waitForTabComplete(tabId, 25_000);
           result = { ok: true, message: `Navegou para ${action.url}`, navigated: true };
+        } else if (action.type === 'wait') {
+          // Executado diretamente no Background SW para imunidade contra BFCache e descarregamento da página
+          const ms = clamp(Number(action.ms) || 1000, 100, 10_000);
+          await sleep(ms);
+          result = { ok: true, message: `Aguardou ${ms}ms` };
         } else {
-          result = await sendToTab(tabId, { type: 'CS/EXECUTE', action, label: actionLabel }, 20_000);
+          try {
+            result = await sendToTab(tabId, { type: 'CS/EXECUTE', action, label: actionLabel }, 20_000);
+          } catch (execErr) {
+            const didNav = await detectNavigation(tabId, tabBefore.url);
+            if (didNav || isChannelClosedOrNavigationError(execErr)) {
+              result = { ok: true, message: 'Ação executada (página navegou para nova URL)', navigated: true };
+            } else {
+              throw execErr;
+            }
+          }
         }
 
         resultSummaries.push(result.message);
@@ -186,6 +200,7 @@ export class AgentRunner {
           this.session.log('system', 'Detectada mudança de página / navegação. Aguardando carregamento...');
           await waitForTabComplete(tabId, 25_000);
           await sleep(500);
+          await ensureContentScript(tabId).catch(() => {});
           // Interrompe as ações restantes deste passo porque os data-ai-id são da página anterior
           break;
         }
