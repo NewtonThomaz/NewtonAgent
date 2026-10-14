@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NewtonAgent — Formulário Dinâmico de Teste</title>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: #13151b;
+      --accent: #cbd5e1;
+      --accent-glow: rgba(226, 232, 240, 0.4);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #262a36;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 30px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    main {
+      width: 100%;
+      max-width: 600px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    header { margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    h1 { font-size: 20px; margin-bottom: 8px; color: #f8fafc; }
+    p.subtitle { color: var(--text-muted); font-size: 13px; }
+    .step-indicator {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 16px;
+    }
+    fieldset {
+      border: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    legend {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #e2e8f0;
+    }
+    /* Custom radio styling to test proxy label clicking */
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .radio-option:hover {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .radio-option input[type="radio"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--text-muted);
+      border-radius: 50%;
+      outline: none;
+      margin: 0;
+      cursor: pointer;
+      position: relative;
+    }
+    .radio-option input[type="radio"]:checked {
+      border-color: #ffffff;
+      background: #ffffff;
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    input[type="text"]:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    button.btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    button.btn-primary {
+      background: linear-gradient(135deg, #ffffff, #cbd5e1);
+      color: #090a0f;
+    }
+    button.btn-primary:hover {
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    }
+    button.btn-secondary {
+      background: #262a36;
+      color: var(--text);
+    }
+    .hidden { display: none !important; }
+    .success-box {
+      text-align: center;
+      padding: 30px;
+      color: #34d399;
+    }
+    .success-box h2 { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <header>
+      <span class="step-indicator" id="stepBadge">Etapa 1 de 3</span>
+      <h1>Simulador de Questionário &amp; Form PWA</h1>
+      <p class="subtitle">Página de teste dinâmico para automação do NewtonAgent</p>
+    </header>
+
+    <!-- ETAPA 1 -->
+    <section id="step1">
+      <fieldset>
+        <legend>Questão 1: Qual protocolo opera na camada de transporte garantindo entrega confiável e ordenada de pacotes?</legend>
+        <label class="radio-option">
+          <input type="radio" name="q1" value="udp" />
+          <span>A) UDP (User Datagram Protocol)</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="q1" value="tcp" />
+          <span>B) TCP (Transmission Control Protocol)</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="q1" value="ip" />
+          <span>C) IP (Internet Protocol)</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <label for="f-candidate">Nome do Candidato:</label>
+        <input type="text" id="f-candidate" placeholder="Digite seu nome completo..." />
+      </fieldset>
+
+      <footer>
+        <span></span>
+        <button type="button" class="btn btn-primary" id="btnNext1">Avançar para Etapa 2</button>
+      </footer>
+    </section>
+
+    <!-- ETAPA 2 -->
+    <section id="step2" class="hidden">
+      <fieldset>
+        <legend>Questão 2: Em Manifest V3, onde devem ser efetuadas requisições de rede para evitar bloqueios de CSP e Shields?</legend>
+        <label class="radio-option">
+          <input type="radio" name="q2" value="cs" />
+          <span>A) Diretamente no Content Script em window.top</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="q2" value="sw" />
+          <span>B) Exclusivamente no Background Service Worker</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="q2" value="inject" />
+          <span>C) Injetando uma tag script remota na página</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <label for="f-browser">Navegador Principal Utilizado:</label>
+        <select id="f-browser">
+          <option value="">Selecione um navegador...</option>
+          <option value="brave">Brave Browser (com Shields ativo)</option>
+          <option value="chrome">Google Chrome</option>
+          <option value="edge">Microsoft Edge</option>
+        </select>
+      </fieldset>
+
+      <footer>
+        <button type="button" class="btn btn-secondary" id="btnPrev2">Voltar</button>
+        <button type="button" class="btn btn-primary" id="btnNext2">Avançar para Etapa 3</button>
+      </footer>
+    </section>
+
+    <!-- ETAPA 3 -->
+    <section id="step3" class="hidden">
+      <fieldset>
+        <legend>Questão 3: Qual método garante que o React detecte mudanças programáticas no valor de um input HTML?</legend>
+        <label class="radio-option">
+          <input type="radio" name="q3" value="val" />
+          <span>A) Apenas el.value = "novo valor"</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="q3" value="setter" />
+          <span>B) Chamando o setter nativo do prototype seguido de eventos input e change</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <label for="f-comments">Comentários ou Justificativa:</label>
+        <textarea id="f-comments" rows="3" placeholder="Insira considerações finais..."></textarea>
+      </fieldset>
+
+      <footer>
+        <button type="button" class="btn btn-secondary" id="btnPrev3">Voltar</button>
+        <button type="button" class="btn btn-primary" id="btnSubmit">Finalizar e Submeter Questionário</button>
+      </footer>
+    </section>
+
+    <!-- SUCESSO -->
+    <section id="stepSuccess" class="hidden success-box">
+      <h2>🎉 Formulário Concluído com Sucesso!</h2>
+      <p>Todas as questões foram preenchidas e validadas.</p>
+    </section>
+  </main>
+
+  <script>
+    const stepBadge = document.getElementById('stepBadge');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const stepSuccess = document.getElementById('stepSuccess');
+
+    document.getElementById('btnNext1').onclick = () => {
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      stepBadge.textContent = 'Etapa 2 de 3';
+    };
+
+    document.getElementById('btnPrev2').onclick = () => {
+      step2.classList.add('hidden');
+      step1.classList.remove('hidden');
+      stepBadge.textContent = 'Etapa 1 de 3';
+    };
+
+    document.getElementById('btnNext2').onclick = () => {
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
+      stepBadge.textContent = 'Etapa 3 de 3';
+    };
+
+    document.getElementById('btnPrev3').onclick = () => {
+      step3.classList.add('hidden');
+      step2.classList.remove('hidden');
+      stepBadge.textContent = 'Etapa 2 de 3';
+    };
+
+    document.getElementById('btnSubmit').onclick = () => {
+      step3.classList.add('hidden');
+      stepBadge.classList.add('hidden');
+      stepSuccess.classList.remove('hidden');
+    };
+  </script>
+</body>
+</html>
