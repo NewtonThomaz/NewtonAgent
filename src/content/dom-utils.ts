@@ -8,14 +8,12 @@ export const SKIP_TAGS = new Set([
   'template',
   'svg',
   'canvas',
-  'iframe',
   'frame',
   'object',
   'embed',
   'meta',
   'link',
   'head',
-  'video',
   'audio',
   'picture',
   'source',
@@ -64,6 +62,7 @@ export const INTERACTIVE_SELECTOR = [
   'select',
   'textarea',
   'summary',
+  'video',
   '[role="button"]',
   '[role="link"]',
   '[role="checkbox"]',
@@ -135,6 +134,14 @@ export function renderedChildren(el: Element): Element[] {
     return assigned.length ? assigned : Array.from(el.children);
   }
   if (el.shadowRoot) return Array.from(el.shadowRoot.children);
+  if (el instanceof HTMLIFrameElement) {
+    try {
+      const doc = el.contentDocument;
+      if (doc && doc.body) return Array.from(doc.body.children);
+    } catch {
+      // Cross-origin iframe protegida pelo navegador
+    }
+  }
   return Array.from(el.children);
 }
 
@@ -207,6 +214,13 @@ export function accessibleName(el: Element): string {
     if (el.type === 'image' && el.alt) return cleanText(el.alt);
   }
 
+  if (el instanceof HTMLVideoElement) {
+    const status = el.paused ? 'Pausado' : 'Reproduzindo';
+    const cur = Math.round(el.currentTime);
+    const dur = Math.round(el.duration || 0);
+    return cleanText(`Vídeo (${status}, ${cur}s/${dur}s)`);
+  }
+
   if (!(el instanceof HTMLInputElement || el instanceof HTMLSelectElement || el instanceof HTMLTextAreaElement)) {
     const text = textOf(el);
     if (text.trim()) return cleanText(text);
@@ -231,6 +245,7 @@ export function computeRole(el: Element): string {
   const tag = el.localName;
   if (tag === 'a') return 'link';
   if (tag === 'button' || tag === 'summary') return 'button';
+  if (tag === 'video') return 'video';
   if (tag === 'select') return (el as HTMLSelectElement).multiple ? 'listbox' : 'select';
   if (tag === 'textarea') return 'textbox';
   if (el instanceof HTMLInputElement) {

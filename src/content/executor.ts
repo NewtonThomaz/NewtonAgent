@@ -123,6 +123,29 @@ export async function realisticClick(el: HTMLElement, focusEl: HTMLElement = el)
   target.dispatchEvent(new PointerEvent('pointerup', pointerInit(x, y, { buttons: 0 })));
   target.dispatchEvent(new MouseEvent('mouseup', mouseInit(x, y, { buttons: 0, detail: 1 })));
   target.dispatchEvent(new MouseEvent('click', mouseInit(x, y, { buttons: 0, detail: 1 })));
+
+  // Fallback nativo: dispara .click() no elemento interativo alvo para garantir compatibilidade com SPAs/LMS
+  try {
+    if (typeof focusEl.click === 'function') {
+      focusEl.click();
+    } else if (typeof el.click === 'function') {
+      el.click();
+    } else if (typeof target.click === 'function') {
+      target.click();
+    }
+  } catch {
+    // Ignora restrições de elementos cross-origin
+  }
+
+  // Se o elemento clicado for um elemento de vídeo, alternar play/pause nativamente
+  if (el instanceof HTMLVideoElement || target instanceof HTMLVideoElement) {
+    const video = (el instanceof HTMLVideoElement ? el : target) as HTMLVideoElement;
+    try {
+      if (video.paused) void video.play();
+      else video.pause();
+    } catch {}
+  }
+
   return { covered };
 }
 

@@ -59,7 +59,7 @@ export function SettingsView({
             value={settings.provider}
             onChange={(e) => updateSettings({ provider: e.target.value as 'openai' | 'gemini' })}
           >
-            <option value="openai">OpenAI Compatible (NVIDIA NIM, OpenAI, Ollama, OpenRouter)</option>
+            <option value="openai">OpenAI / NVIDIA NIM / Ollama</option>
             <option value="gemini">Google Gemini (API Nativa)</option>
           </select>
         </section>
@@ -68,12 +68,11 @@ export function SettingsView({
           <label className="field-label" htmlFor="setting-apikey">
             API Key
           </label>
-          <section style={{ display: 'flex', gap: '6px' }}>
+          <section className="api-key-row">
             <input
               id="setting-apikey"
               type={showKey ? 'text' : 'password'}
               className="text-input"
-              style={{ flex: 1 }}
               placeholder="Cole sua chave aqui (ex: nvapi-..., sk-...)"
               value={settings.apiKey}
               onChange={(e) => updateSettings({ apiKey: e.target.value })}
@@ -219,11 +218,10 @@ export function SettingsView({
       )}
 
       {/* Action buttons */}
-      <section style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+      <section className="settings-actions-row">
         <button
           type="button"
           className="btn-action-secondary"
-          style={{ flex: 1 }}
           onClick={testConnection}
           disabled={testing || saving}
         >
@@ -234,7 +232,6 @@ export function SettingsView({
         <button
           type="button"
           className="btn-action-primary"
-          style={{ flex: 1 }}
           onClick={handleSave}
           disabled={saving || testing}
         >
